@@ -204,10 +204,23 @@ public enum CameraStyleCardExporter {
     public static func export(_ compiled: [CompiledSlot], to folder: URL, includeWhiteBalanceBlock: Bool = true,
                               includePictureStyleFiles: Bool = false,
                               converter: CanonCFParseInstallation? = nil, date: Date = Date()) throws -> Receipt {
-        var isDirectory: ObjCBool = false
-        guard FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDirectory), isDirectory.boolValue else {
-            throw ProfileError.invalid("Export folder \(folder.path) does not exist.")
+        try export(compiled, to: folder, includeWhiteBalanceBlock: includeWhiteBalanceBlock,
+                   includePictureStyleFiles: includePictureStyleFiles, converter: converter, date: date) {
+            try publish($0, to: folder)
         }
+    }
+
+    package static func copy(_ compiled: [CompiledSlot], to card: CameraStyleCard.Card,
+                             includeWhiteBalanceBlock: Bool, converter: CanonCFParseInstallation?) throws -> Receipt {
+        try export(compiled, to: card.root, includeWhiteBalanceBlock: includeWhiteBalanceBlock,
+                   includePictureStyleFiles: false, converter: converter, date: Date()) {
+            try CameraStyleCardFiles.publish($0, to: card)
+        }
+    }
+
+    private static func export(_ compiled: [CompiledSlot], to folder: URL, includeWhiteBalanceBlock: Bool,
+                               includePictureStyleFiles: Bool, converter: CanonCFParseInstallation?, date: Date,
+                               publishFiles: ([(name: String, data: Data)]) throws -> [String]) throws -> Receipt {
         let slots = compiled.map(\.slot)
         let wb = includeWhiteBalanceBlock ? try compiled.map { try $0.plan.map { try WBEntry($0.whiteBalance) } ?? .leave } : nil
         let file = try cardFile(slots, wb: wb)
@@ -226,7 +239,7 @@ public enum CameraStyleCardExporter {
         }
         outputs.append((slotsFileName, Data(text.utf8)))
         outputs.append((fileName, file))
-        let written = try publish(outputs, to: folder)
+        let written = try publishFiles(outputs)
         return Receipt(folder: folder, cardFileSHA256: digest, recordSHA256: recordDigests, files: written, withWBBlock: wb != nil)
     }
 

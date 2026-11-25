@@ -114,6 +114,50 @@ extension AppModel {
  func exportCameraStyles() {exportStyles(forEOSUtility:false)}
  func exportEOSUtilityStyles() {exportStyles(forEOSUtility:true)}
 
+ /// Finds the mounted camera card, writes CFPSTYLE.BIN and SLOTS.txt to its root, checks them and ejects it.
+ func copyCameraStylesToCard() {
+  guard !exportingCameraStyles else { return }
+  let card: CameraStyleCard.Card
+  switch CameraStyleCard.choose(CameraStyleCard.find()) {
+  case .problem(let why): self.error = why; return
+  case .card(let found): card = found
+  }
+  guard let ext = card.knownExtension else { return }
+  var plans: [CanonSlotPlan?] = []
+  for slot in 0..<3 {
+   switch cameraStylePlan(slot) {
+   case .none: plans.append(nil)
+   case .success(let plan)?: plans.append(plan)
+   case .failure(let e)?: self.error = "User Def. \(slot + 1): " + e.localizedDescription; return
+   }
+  }
+  guard plans.contains(where: { $0 != nil }) else { return }
+  let includeWB = cameraStylesWBBlock, executable = Bundle.main.executableURL!
+  let needsConverter = plans.contains { $0?.isRegistered == true }
+  exportingCameraStyles = true; status = "Copying styles to \(card.volumeName)…"
+  Task {
+   defer { exportingCameraStyles = false }
+   do {
+    let receipt = try await Task.detached(priority: .userInitiated) { () throws -> CameraStyleCardExporter.Receipt in
+     let compiler = needsConverter ? try CanonStyleCompiler(isolation: .helper(executable: executable)) : nil
+     let compiled = try CameraStyleCardExporter.compile(plans, compiler: compiler)
+     return try CameraStyleCardExporter.copy(compiled, to: card, includeWhiteBalanceBlock: includeWB, converter: compiler?.installation)
+    }.value
+    let short = receipt.cardFileSHA256.prefix(8)
+    do {
+     try await CameraStyleCard.eject(card)
+     status = "Copied to \(card.volumeName) and ejected (CFPSTYLE.BIN \(short)…" + (receipt.withWBBlock ? ", with WB" : ", no WB block") + "). " + CameraStyleCard.cameraSteps(ext)
+    } catch {
+     status = "Copied to \(card.volumeName) and checked (CFPSTYLE.BIN \(short)…), but it could not be ejected: \(error.localizedDescription) Check that the same card is present and eject it in Finder before removing it."
+    }
+   } catch let failure as CameraStyleCardExporter.ExportFailure {
+    self.error = failure.localizedDescription
+    let files = failure.publishedFiles
+    status = files.isEmpty ? "Copy stopped before replacing either file." : "Copy stopped after replacing \(files.joined(separator: ", ")). The app did not eject the card."
+   } catch { self.error = error.localizedDescription; status = "Copy stopped before replacing either file." }
+  }
+ }
+
  private func exportStyles(forEOSUtility:Bool) {
   guard !exportingCameraStyles else { return }
   var plans: [CanonSlotPlan?] = []
@@ -290,9 +334,13 @@ struct CameraStyleSlotsView: View {
     Divider()
     Button(action: model.exportEOSUtilityStyles) {
      Label("Export for EOS Utility…", systemImage:"square.and.arrow.up").frame(maxWidth:.infinity)
-    }.buttonStyle(FPPrimaryButtonStyle()).disabled(model.exportingCameraStyles || model.cameraStyleSlots.allSatisfy { $0 == nil })
+    }.buttonStyle(.bordered).disabled(model.exportingCameraStyles || model.cameraStyleSlots.allSatisfy { $0 == nil })
     Text("Make .pf2 files for colour styles and a slot guide for Monochrome and white balance.").font(.caption).fpSecondaryText()
     Toggle("Include WB block in card file", isOn: $model.cameraStylesWBBlock).font(.callout)
+    Button(action: model.copyCameraStylesToCard) {
+     HStack { if model.exportingCameraStyles { ProgressView().controlSize(.small) }; Text(model.exportingCameraStyles ? "Copying…" : "Copy to card"); Image(systemName: "sdcard") }.frame(maxWidth: .infinity)
+    }.buttonStyle(FPPrimaryButtonStyle()).disabled(model.exportingCameraStyles || model.cameraStyleSlots.allSatisfy { $0 == nil })
+    Text("Finds the camera card in the reader, writes CFPSTYLE.BIN and SLOTS.txt to it, checks them and ejects it. Only cards with a style-reading camera extension are used; nothing else on the card is touched.").font(.caption).fpSecondaryText()
     Toggle("Also save .pf2 files for EOS Utility", isOn: $model.cameraStylesIncludePF2).font(.callout)
     Button(action: model.exportCameraStyles) {
      HStack { if model.exportingCameraStyles { ProgressView().controlSize(.small) }; Text(model.exportingCameraStyles ? "Exporting…" : "Export extension card file…"); Image(systemName: "square.and.arrow.up") }.frame(maxWidth: .infinity)

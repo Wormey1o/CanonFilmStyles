@@ -9,12 +9,12 @@ You need macOS 14 or later, Python 3.10 or later, and Apple's Xcode Command Line
 ```sh
 cd apps/CanonFilmProfiles
 python3 build_app.py
-open "dist/Canon Film Profiles 0.6.3.app"
+open "dist/Canon Film Profiles 0.6.4.app"
 ```
 
 The script builds Swift and C source and signs the bundle locally. It creates a fresh bundle and keeps existing ones. In the app, create a recipe or import a recipe card. Choose **Open photo…** to preview the look on a JPEG or supported 450D CR2 preview. Use **Export** for recipe files and LUTs. Open **Native processing → Idle batch grain** to process copies of local JPEGs on the Mac.
 
-**Camera styles** maps recipes to Canon User Def. slots. Choose **Export for EOS Utility…** to generate colour Picture Styles and a manual slot guide. Building registered colour records for the optional extension card file uses an arm64-compatible converter from a separate EOS Utility or Picture Style Editor installation. Follow the [Camera Styles guide](apps/CanonFilmProfiles/CAMERA_STYLES.md) for compatibility, exports and setup. Camera data exports are available in this build. Effects card installation and experimental native boot package export require the separate maintainer camera resources.
+**Camera styles** maps recipes to Canon User Def. slots. Choose **Export for EOS Utility…** to generate colour Picture Styles and a manual slot guide. Building registered colour records for the optional extension card file uses an arm64-compatible converter from a separate EOS Utility or Picture Style Editor installation. Follow the [Camera Styles guide](apps/CanonFilmProfiles/CAMERA_STYLES.md) for compatibility, exports and setup. Use **Copy to card** to update and eject an already provisioned compatible card. Fresh-card extension setup requires a separate camera activation and is outside this release. Effects card installation and experimental native boot package export require the separate maintainer camera resources.
 
 ## Develop
 

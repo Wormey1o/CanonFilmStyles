@@ -6,6 +6,15 @@ import Foundation
 import ProfileCore
 
 let arguments = CommandLine.arguments
+// --find-card: read-only report of what "Copy to card" would choose.
+if arguments.dropFirst().first == "--find-card" {
+    let cards = CameraStyleCard.find()
+    for c in cards { print("card \(c.volumeName) at \(c.root.path): AUTOEXEC.BIN \(c.extensionSHA256) → \(c.knownExtension?.name ?? "not a style extension")") }
+    switch CameraStyleCard.choose(cards) {
+    case .card(let c): print("would copy to \(c.root.path)"); print(CameraStyleCard.cameraSteps(c.knownExtension!)); exit(0)
+    case .problem(let why): print("refused: \(why)"); exit(1)
+    }
+}
 let stock = arguments.dropFirst().first == "--pf2"
 let a = stock ? [arguments[0]] + Array(arguments.dropFirst(2)) : arguments
 guard a.count == 4 else { FileHandle.standardError.write("usage: CameraStyleExportTool [--pf2] MODEL.json|interim RECIPES.json OUT_DIR\n".data(using: .utf8)!); exit(2) }

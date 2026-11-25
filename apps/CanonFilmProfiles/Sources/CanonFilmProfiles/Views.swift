@@ -149,7 +149,7 @@ struct CameraSlotsView:View {
     HStack{Text("Configured Effects card").font(.subheadline.weight(.medium));Spacer();Button(action:model.scan){Image(systemName:"arrow.clockwise")}.buttonStyle(.borderless).disabled(model.uploading)}
     if model.cards.isEmpty {Label("Insert the camera card",systemImage:"sdcard").font(.callout).fpSecondaryText()}else{Picker("Card",selection:$model.selectedCard){ForEach(model.cards){Text($0.displayName).tag($0.id as String?)}}.labelsHidden()}
     Button(action:{model.upload()}){HStack{if model.uploading{ProgressView().controlSize(.small)};Text(model.uploading ? "Uploading…":"Upload & eject");Image(systemName:"arrow.up.to.line")}.frame(maxWidth:.infinity)}.buttonStyle(FPPrimaryButtonStyle()).disabled(model.uploading || model.selectedCard==nil)
-    Text("Switch the camera off and place its configured FAT16 Effects card in the reader. macOS may request authentication.").font(.caption).fpSecondaryText()
+    Text("For the older FAT16 Effects card only. Picture Style recipes go to the card with Camera styles → Copy to card. Switch the camera off and place its configured FAT16 Effects card in the reader. macOS may request authentication.").font(.caption).fpSecondaryText()
     Button{model.upload(prepareWorking:true)}label:{Text("Reset existing Effects card…").foregroundStyle(FP.brandInk)}.buttonStyle(.link).disabled(model.selectedCard==nil || model.uploading)
     Text("Clears look assignments and recognized timing files. The previous card installation is backed up on this Mac.").font(.caption).fpSecondaryText()
    } else {

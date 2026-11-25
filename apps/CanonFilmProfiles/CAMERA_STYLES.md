@@ -2,9 +2,9 @@
 
 Camera Styles turns a recipe into Canon Picture Style settings for User Def. 1–3. The camera uses its normal JPEG processing. The app shows approximations and omitted controls before export. Grain, clarity, and shading stay outside this camera workflow.
 
-## Use Canon's own Picture Style registration
+## First setup on a stock 450D
 
-This is the starting point for an unmodified camera. It is also a useful fallback if you only want to use one or two Looks.
+Start with a camera-ready SD card, a USB cable, and Canon EOS Utility on a computer that supports the Rebel XSi / 450D. The Mac that runs Canon Film Profiles can also generate files for EOS Utility on another computer. Check the camera and operating system on Canon's support page. If you format the card in the camera, first back up any existing photos.
 
 1. In **Camera styles**, assign recipes to User Def. 1–3. Review each plan, including white balance, the base style and the sliders.
 2. Choose **Export for EOS Utility…** and select a fresh folder on the Mac. The app writes .pf2 files for colour recipes and a SLOTS.txt guide. Built-in monochrome uses Canon camera controls and has no .pf2 output.
@@ -23,8 +23,8 @@ This workflow was tested on a Canon EOS 450D / Rebel XSi running stock firmware 
 The steps below update recipe data on that exact setup. A first-time extension installation on a fresh card is still outside the documented workflow. The app's Effects and Native processing options use their own formats and deployment paths.
 
 1. Save a copy of the current `CFPSTYLE.BIN`, if present. Record the current User Def. styles, any custom `.pf2` files, and the camera's WB mode and shift. Keep a known-good ordinary camera card for recovery.
-2. In **Camera styles**, review the assigned slots and choose **Export extension card file…**. Export to a fresh Mac folder. Registered colour records in the card file require a compatible installed Canon converter. Leave automatic WB enabled if you want the card file to apply per-slot WB. An empty slot leaves the camera's saved slot alone.
-3. With the camera off and the card in its reader, copy **only the new `CFPSTYLE.BIN`** to the top level of the already provisioned card. Keep `SLOTS.txt` on the Mac. Check the copied file against the file digest recorded in `SLOTS.txt`, then eject normally.
+2. In **Camera styles**, review the assigned slots. Registered colour records for the extension require a compatible installed Canon converter. Leave automatic WB enabled if you want the card file to apply per-slot WB. An empty slot leaves the camera's saved slot alone.
+3. With the camera off and its prepared card in the reader, choose **Copy to card**. The app verifies the selected volume and extension, writes and checks both files, and ejects the card. A pre-existing AppleDouble sidecar blocks the copy before either file is replaced. To copy manually, choose **Export extension card file…**, export to a fresh Mac folder, copy only `CFPSTYLE.BIN` to the card root, and compare its SHA-256 with `SLOTS.txt` before ejecting.
 4. Insert the card while the camera is off. Turn it on, wait for the three short startup flashes, and set the dial to a creative mode such as P or Av. Work outside Live View. In Canon's **Picture Style** menu, select Standard first if your desired User Def. slot is already selected. Select the desired User Def. slot, press **SET**, and wait. A new selection is needed. The boot-time selection by itself does not install anything.
 5. If changes are required, the extension gives one long pulse while it works, followed by three long pulses when its readback matches. Keep the selected style steady until it finishes. Silence is expected when settings already match. Check the style and white balance after selection, then take a test JPEG. Each boot permits one install attempt.
 

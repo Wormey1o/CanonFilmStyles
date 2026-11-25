@@ -57,7 +57,7 @@ def validate_camera_resources():
 
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--output', type=Path, default=BASE / 'dist/Canon Film Profiles 0.6.3.app')
+parser.add_argument('--output', type=Path, default=BASE / 'dist/Canon Film Profiles 0.6.4.app')
 parser.add_argument('--scratch-path', type=Path, default=BASE / '.build')
 parser.add_argument('--include-local-camera-resources', action='store_true',
                     help='opt in to bundling the pinned camera files in a maintainer workspace')
@@ -127,7 +127,7 @@ with tempfile.TemporaryDirectory(prefix='.canon-app-', dir=app.parent) as folder
     info = dict(
         CFBundleName='Canon Film Profiles', CFBundleDisplayName='Canon Film Profiles',
         CFBundleIdentifier='local.canonfilmprofiles.editor', CFBundleExecutable='CanonFilmProfiles',
-        CFBundlePackageType='APPL', CFBundleShortVersionString='0.6.3', CFBundleVersion='1',
+        CFBundlePackageType='APPL', CFBundleShortVersionString='0.6.4', CFBundleVersion='1',
         CFBundleIconFile='FilmProfiles', NSAccentColorName='AccentColor',
         LSMinimumSystemVersion='14.0', NSHighResolutionCapable=True,
         NSHumanReadableCopyright='Canon Film Profiles. Components use GPLv2; see Resources/COPYING.'
