@@ -2,15 +2,17 @@
 
 Camera Styles turns a recipe into Canon Picture Style settings for User Def. 1–3. The camera uses its normal JPEG processing. The app shows approximations and omitted controls before export. Grain, clarity, and shading stay outside this camera workflow.
 
-## First setup on a stock 450D
+## Put your first look on a stock 450D
 
-Start with a camera-ready SD card, a USB cable, and Canon EOS Utility on a computer that supports the Rebel XSi / 450D. The Mac that runs Canon Film Profiles can also generate files for EOS Utility on another computer. Check the camera and operating system on Canon's support page. If you format the card in the camera, first back up any existing photos.
+Canon Film Profiles creates the look on your Mac. It saves each colour look as a Picture Style file ending in `.pf2`. Canon EOS Utility is a separate app from Canon. It transfers the look over USB into one of the camera's three **User Def.** slots. The slot is where the camera stores and recalls that look.
 
-1. In **Camera styles**, assign recipes to User Def. 1–3. Review each plan, including white balance, the base style and the sliders.
-2. Choose **Export for EOS Utility…** and select a fresh folder on the Mac. The app writes .pf2 files for colour recipes and a SLOTS.txt guide. Built-in monochrome uses Canon camera controls and has no .pf2 output.
-3. Use a version of EOS Utility that supports your camera and computer to register the `.pf2` files in the corresponding User Def. slots. For monochrome, choose Monochrome as the base in the camera's User Def. detail settings and enter the values from `SLOTS.txt`. Set white balance mode and shift by hand as you change styles.
+You need an ordinary camera-ready SD card for your photos, a USB cable, and a computer that can run a 450D-compatible version of EOS Utility. Check the camera and operating-system requirements before downloading. Canon's EOS Utility 2.14.31c download lists Intel Macs running OS X 10.11 through macOS 10.14. You can export on a newer Mac and transfer the files to a compatible computer for registration. [Canon 450D downloads](https://www.usa.canon.com/support/p/eos-rebel-xsi) · [Canon's Mac compatibility list](https://asia.canon/en/support/0200580902) · [Canon's Windows compatibility list](https://asia.canon/en/support/0200458002)
 
-See Canon's software manuals for your computer and model, and pages 85–86 of the camera manual for editing the User Def. slots. [EOS Rebel XSi support](https://www.usa.canon.com/support/p/eos-rebel-xsi) · [EOS 450D instruction manual](https://files.canon-europe.com/files/soft31340/Manual/CUG_EOS450D_EN_Flat.pdf)
+1. **Make the file on your Mac.** Open Canon Film Profiles, create or import a recipe, and open **Camera styles**. Assign the recipe to **User Def. 1**, click **Export for EOS Utility…**, and choose a folder on your Mac. For a colour recipe in slot 1, look for `User Def. 1.pf2` and `SLOTS.txt`.
+2. **Send the look to the camera.** Keep the `.pf2` file on the computer that runs EOS Utility. Connect the 450D to the computer running Canon EOS Utility by USB. Turn the camera on and set its mode dial to **P**. In EOS Utility 2, open **Camera settings/Remote shooting**, then use **Register User Defined style**. Select the **User Def. 1** tab, open `User Def. 1.pf2`, and click **OK**. Use the same slot number if you export another look. Registering to a slot replaces its previous style. [Canon's USB registration steps](https://asia.canon/en/support/8201411800)
+3. **Shoot with the look.** Quit EOS Utility, turn the camera off, and unplug USB. Turn it back on. In the camera's **Picture Style** menu, choose **User Def. 1** and press **SET**. Set the white balance and shift listed in `SLOTS.txt`, then take a JPEG and review it on the camera. The camera applies the look to the JPEG as it shoots. [EOS 450D instruction manual, pp. 85–86](https://files.canon-europe.com/files/soft31340/Manual/CUG_EOS450D_EN_Flat.pdf)
+
+For a built-in monochrome recipe, open `SLOTS.txt` and copy the settings by hand. In the camera's **Picture Style** menu, highlight the matching User Def. slot, press **DISP.** for **Detail set**, and choose **Monochrome** as the base. Enter the sharpness, contrast, filter and toning from the guide. Set white balance separately. This route works on the camera without a USB transfer. [EOS 450D instruction manual, pp. 82–86](https://files.canon-europe.com/files/soft31340/Manual/CUG_EOS450D_EN_Flat.pdf)
 
 ## Use the v3 card file on an existing setup
 
@@ -38,5 +40,7 @@ WB is applied after an install and on eligible slot changes if the export includ
 - **Return to ordinary shooting.** After normal shutdown, use a known-good ordinary card. Previously registered Picture Styles and WB settings can persist. Select Standard or another stock style, choose the required WB preset, and clear any unwanted WB shift in **WB SHIFT/BKT**. The test card and the saved export can be kept for later investigation.
 
 ## Verification
+
+A physical EOS 450D with a previously working extension installation also started with an ordinary card and wrote a valid Standard Picture Style JPEG on 25 November 2026. The test verified ordinary capture with the camera's existing boot setting.
 
 On 25 November 2026, combined v3 applied a two-slot configuration change and verified readback on a physical EOS 450D. A series of slot changes exercised WB beyond the earlier runtime's 16-request limit. The three test JPEGs recorded the expected style and WB settings. After a normal power cycle, the next selection produced no install pulses. That agrees with settings already matching, but the test did not collect a post-cycle JPEG to independently verify the slider values. The emulator drops some slider-only changes across a power cycle, so a test JPEG after a restart is the best check if slider persistence matters to your setup.
